@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../Models/getjock.dart';
+import '../services/result.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -9,9 +11,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   bool _isdisliked = false;
   bool _isliked = false;
+  String content = "";
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +28,32 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
-                alignment: Alignment.center,
-                height: 400,
-                width: 400,
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                ),
-                child: Text(
-                  'joke',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+              child: GestureDetector(
+                onTap: () async {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  final Getjock jokes = await calculate();
+                  print(jokes.content);
+                  setState(() {
+                    _isLoading = false;
+                    content = jokes.content;
+                  });
+                  // API call here
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 400,
+                  width: 400,
+                  decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                  ),
+                  child: Text(
+                    _isLoading ? "..." : content,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
               ),
@@ -56,8 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
   Widget getDislikeButton() {
-    
     return GestureDetector(
         onTap: () {
           setState(() {
@@ -81,7 +98,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget getlikeButton() {
-    
     return GestureDetector(
         onTap: () {
           setState(() {
@@ -105,12 +121,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget getshareButton() {
-
     return GestureDetector(
         onTap: () {
-          setState(() {
-            
-          });
+          setState(() {});
           // API call here
         },
         child: Container(
@@ -126,5 +139,4 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Image.asset("assets/icons/share.png"),
         ));
   }
-
 }
